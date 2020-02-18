@@ -95,4 +95,23 @@ public class Repository {
         return addedCustomerId;
     }
 
+    // Metod som uppdaterar en customer beroende på vad för värden som skickas in.
+    // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
+    public int updateCustomerDetails(String column, String setValue, int id) {
+        int rowAffected = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE customer " +
+                    "SET " + column + " = ? " +
+                    "WHERE id = ?");
+            pstmt.setString(1, setValue);
+            pstmt.setInt(2, id);
+            rowAffected = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
+    }
+
 }

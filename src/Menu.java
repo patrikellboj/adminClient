@@ -30,6 +30,7 @@ public class Menu {
     }
 
     public void updateCustomerDetails(String ssnumber) {
+        int output;
         Customer customer = repository.getSpecificCustomer(ssnumber);
         if(customer != null) {
             System.out.println("Found the following customer: " + customer.toString());
@@ -41,19 +42,47 @@ public class Menu {
 
             switch(option) {
                 case "1":
-                    // Uppdatera namn
-
+                    // Uppdaterar namn
+                    System.out.println("Enter value for new name: ");
+                    String newName = scan.nextLine().trim();
+                    output = repository.updateCustomerDetails("name", newName, customer.getId());
+                    if(output != 0) {
+                        System.out.println("Customer updatet to:\n"
+                                + repository.getSpecificCustomer(ssnumber).toString());
+                    } else {
+                        System.out.println("Unexpected error occurred when updating name");
+                    }
                     break;
+
                 case "2":
-                    // Uppdatera Password
-
+                    // TODO: 2020-02-18 kan inte ändra personnummret och sen visa kunden.
+                    // Uppdaterar personnummer
+                    System.out.println("Enter value for new social security number: ");
+                    String newSsnumber = scan.nextLine().trim();
+                    output = repository.updateCustomerDetails("ssnumber", newSsnumber, customer.getId());
+                    if(output != 0) {
+                        System.out.println("Customer updatet to:\n"
+                                + repository.getSpecificCustomer(ssnumber).toString());
+                    } else {
+                        System.out.println("Unexpected error occurred when updating social security number");
+                    }
                     break;
+
                 case "3":
-                    // Uppdatera password
+                    // Uppdaterar lösenord
+                    System.out.println("Enter value for new password: ");
+                    String newPass = scan.nextLine().trim();
+                    output = repository.updateCustomerDetails("password", newPass, customer.getId());
+                    if(output != 0) {
+                        System.out.println("Customer updatet to:\n"
+                                + repository.getSpecificCustomer(ssnumber).toString());
+                    } else {
+                        System.out.println("Unexpected error occurred when updating password");
+                    }
                     break;
                 default:
-                    // gör något vid default
-//                    System.out.println("");
+                    System.out.println("Didn't catch that.");
+                    break;
             }
 
         } else {
