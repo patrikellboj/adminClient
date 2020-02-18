@@ -55,14 +55,13 @@ public class Menu {
                     break;
 
                 case "2":
-                    // TODO: 2020-02-18 kan inte ändra personnummret och sen visa kunden.
                     // Uppdaterar personnummer
                     System.out.println("Enter value for new social security number: ");
                     String newSsnumber = scan.nextLine().trim();
                     output = repository.updateCustomerDetails("ssnumber", newSsnumber, customer.getId());
                     if(output != 0) {
                         System.out.println("Customer updatet to:\n"
-                                + repository.getSpecificCustomer(ssnumber).toString());
+                                + repository.getSpecificCustomer(newSsnumber).toString());
                     } else {
                         System.out.println("Unexpected error occurred when updating social security number");
                     }
