@@ -114,4 +114,8 @@ public class Repository {
         return rowAffected;
     }
 
+    public void addCustomerAccount(int id, double balance, double interestRate) {
+
+    }
+
 }

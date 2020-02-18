@@ -83,9 +83,33 @@ public class Menu {
                     System.out.println("Didn't catch that.");
                     break;
             }
-
         } else {
             System.out.println("Could not find a customer with social security number: " + ssnumber);
+        }
+    }
+
+    public void addCustomerAccount(String ssnumber) {
+        try {
+            double balance;
+            double interestRate;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                System.out.println("Creating an account for the following customer: " + customer.toString());
+                System.out.println("Enter initial balance for account:");
+                String tempBalance = scan.nextLine();
+                balance = Double.parseDouble(tempBalance);
+                System.out.println("Enter interest rate for account:");
+                String tempInterestRate = scan.nextLine();
+                interestRate = Double.parseDouble(tempInterestRate);
+
+                repository.addCustomerAccount(customer.getId(), balance, interestRate);
+
+
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
         }
     }
 
