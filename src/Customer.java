@@ -29,12 +29,10 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", ssnumber='" + ssnumber + '\'' +
-                ", password='" + password + '\'' +
-                ", id=" + id +
-                '}';
+        return "ID: " + id +
+                ", Name: " + name +
+                ", SS number: " + ssnumber +
+                ", Password: " + password;
     }
 }
 

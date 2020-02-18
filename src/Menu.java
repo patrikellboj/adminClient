@@ -29,5 +29,37 @@ public class Menu {
         }
     }
 
+    public void updateCustomerDetails(String ssnumber) {
+        Customer customer = repository.getSpecificCustomer(ssnumber);
+        if(customer != null) {
+            System.out.println("Found the following customer: " + customer.toString());
+            System.out.println("What would you like to update? \n" +
+                    "1. for Name\n" +
+                    "2. for SS Number\n" +
+                    "3. for Password");
+            String option = scan.nextLine();
+
+            switch(option) {
+                case "1":
+                    // Uppdatera namn
+
+                    break;
+                case "2":
+                    // Uppdatera Password
+
+                    break;
+                case "3":
+                    // Uppdatera password
+                    break;
+                default:
+                    // gör något vid default
+//                    System.out.println("");
+            }
+
+        } else {
+            System.out.println("Could not find a customer with social security number: " + ssnumber);
+        }
+    }
+
 
 }
