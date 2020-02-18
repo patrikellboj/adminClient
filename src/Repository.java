@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class Repository {
         }
     }
 
-
+    // Metod som returnerar en lista med alla customers
     public ArrayList<Customer> getCustomers() {
         ArrayList<Customer> allCustomersList = new ArrayList<>();
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
@@ -36,13 +37,36 @@ public class Repository {
                 String ssnumber = rs.getString("ssnumber");
                 String password = rs.getString("password");
                 allCustomersList.add(new Customer(id, name, ssnumber, password));
-                System.out.println("id: " + id + ", name: " + name + ", ssnumber: " + ssnumber + ", password: " + password);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
         return allCustomersList;
     }
+
+    // Metod för att lägga till en kund. Returnerar id'et på den kund som läggs till.
+    // Returnerar 0 om något går fel.
+    public int addCustomer(String name, String ssnumber, String password) {
+        ResultSet rs;
+        int addedCustomerId = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            String sql = "INSERT INTO customer(name, ssnumber, password) " +  "VALUES(?, ?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, name);
+            pstmt.setString(2, ssnumber);
+            pstmt.setString(3, password);
+            int rowAffected = pstmt.executeUpdate();
+            if(rowAffected == 1) {
+                rs = pstmt.getGeneratedKeys();
+                if(rs.next()) {
+                    addedCustomerId = rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addedCustomerId;
+    }
+
 }

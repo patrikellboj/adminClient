@@ -1,8 +1,8 @@
 public class Customer {
-    int id;
-    String name;
-    String ssnumber;
-    String password;
+    private int id;
+    private String name;
+    private String ssnumber;
+    private String password;
 
     Customer (int id, String name, String ssnumber, String password) {
         this.id = id;
