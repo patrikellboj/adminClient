@@ -184,8 +184,17 @@ public class Repository {
         return customerAccounts;
     }
 
-    public void deleteCustomer() {
-
+    // Metod som kallar på en stored procedure som raderar en kund och dess konton och lån.
+    // Raderar allt, oavsett vad som finns på kontona eller lånen
+    public void deleteCustomer(int customerId) {
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+        CallableStatement cstmt = conn.prepareCall("CALL delete_customer(?);");
+        cstmt.setInt(1, customerId);
+        cstmt.execute();
+        } catch (SQLException e) {
+            System.out.println("Unexpected Error occurred when trying to delete customer");
+            e.printStackTrace();
+        }
     }
 
 }

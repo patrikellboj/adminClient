@@ -121,14 +121,27 @@ public class Menu {
     }
 
     public void deleteCustomer(String ssnumber) {
+        ArrayList<Account> accounts;
+        ArrayList<Loan> loans;
         Customer customer = repository.getSpecificCustomer(ssnumber);
         if(customer != null) {
-            // todo kalla på metod som raderar kunddata i db'n
+            accounts = repository.getCustomerAccounts(customer.getId());
+            loans = repository.getCustomerLoans(customer.getId());
+            System.out.println("Are you sure you want to delete customer: " + customer.toString() + "\n" +
+                    accounts.size() + " accounts and " + loans.size() + " loans belonging " + customer.getName() +
+                    " will also be permanently deletet");
+            System.out.println("1. for Yes \n" +
+                               "2. for No");
+            String answer = scan.nextLine();
+            if (answer.equals("1")) {
+                repository.deleteCustomer(customer.getId());
+                System.out.println("Customer was successfully deletet");
+            } else {
+                System.out.println("Customer was not deleted");
+            }
         } else {
             System.out.println("Could not find a customer with social security number: " + ssnumber);
         }
-
     }
-
 
 }

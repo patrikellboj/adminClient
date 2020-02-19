@@ -5,6 +5,7 @@ public class Main {
 //        menu.getCustomers();
 //        menu.addCustomer("Erik", "761201", "123");
 //        menu.updateCustomerDetails("881212");
-        menu.addCustomerAccount("881212");
+//        menu.addCustomerAccount("761201");
+        menu.deleteCustomer("761201");
     }
 }
