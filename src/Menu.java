@@ -90,21 +90,28 @@ public class Menu {
 
     public void addCustomerAccount(String ssnumber) {
         try {
+            int output;
             double balance;
             double interestRate;
             Customer customer = repository.getSpecificCustomer(ssnumber);
             if (customer != null) {
                 System.out.println("Creating an account for the following customer: " + customer.toString());
                 System.out.println("Enter initial balance for account:");
-                String tempBalance = scan.nextLine();
+                String tempBalance = scan.nextLine().trim();
                 balance = Double.parseDouble(tempBalance);
-                System.out.println("Enter interest rate for account:");
-                String tempInterestRate = scan.nextLine();
+                System.out.println("Enter interest rate (in %) for account:");
+                String tempInterestRate = scan.nextLine().trim();
                 interestRate = Double.parseDouble(tempInterestRate);
 
-                repository.addCustomerAccount(customer.getId(), balance, interestRate);
+                output = repository.addCustomerAccount(customer.getId(), balance, interestRate);
 
-
+                if(output != 0) {
+                    System.out.println("An account with a balance of: " + balance +
+                            " and an interest rate of: " + interestRate + "% was created for " + customer.getName());
+                } else {
+                    System.out.println("Unexpected error occurred when trying to create an account for " +
+                            customer.getName());
+                }
             } else {
                 System.out.println("Could not find a customer with social security number: " + ssnumber);
             }

@@ -75,7 +75,7 @@ public class Repository {
         int addedCustomerId = 0;
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "INSERT INTO customer(name, ssnumber, password) " +
+                    "INSERT INTO inl3.customer(name, ssnumber, password) " +
                          "VALUES(?, ?, ?)",
                           Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, name);
@@ -102,20 +102,40 @@ public class Repository {
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
                     "UPDATE customer " +
-                    "SET " + column + " = ? " +
-                    "WHERE id = ?");
+                         "SET " + column + " = ? " +
+                         "WHERE id = ?");
             pstmt.setString(1, setValue);
             pstmt.setInt(2, id);
             rowAffected = pstmt.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rowAffected;
     }
 
-    public void addCustomerAccount(int id, double balance, double interestRate) {
-
+    // Metod för att lägga till en ett konto för en kund. Returnerar id'et på det konto som läggs till.
+    // Returnerar 0 om något går fel.
+    public int addCustomerAccount(int id, double balance, double interestRate) {
+        int addedAccountId = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "INSERT INTO inl3.account(customer_id, balance, interest_rate) " +
+                         "VALUES(?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.setInt(1, id);
+            pstmt.setDouble(2, balance);
+            pstmt.setDouble(3, interestRate);
+            int rowAffected = pstmt.executeUpdate();
+            if(rowAffected == 1) {
+                ResultSet rs = pstmt.getGeneratedKeys();
+                if(rs.next()) {
+                    addedAccountId = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addedAccountId;
     }
 
 }
