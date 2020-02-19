@@ -41,7 +41,6 @@ public class Repository {
                 String ssnumber = rs.getString("ssnumber");
                 String password = rs.getString("password");
                 customer = new Customer(id, name, ssnumber, password);
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,7 +96,7 @@ public class Repository {
 
     // Metod som uppdaterar en customer beroende på vad för värden som skickas in.
     // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
-    public int updateCustomerDetails(String column, String setValue, int id) {
+    public int updateCustomerDetails(String column, String setValue, int customerId) {
         int rowAffected = 0;
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
@@ -105,7 +104,7 @@ public class Repository {
                          "SET " + column + " = ? " +
                          "WHERE id = ?");
             pstmt.setString(1, setValue);
-            pstmt.setInt(2, id);
+            pstmt.setInt(2, customerId);
             rowAffected = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,14 +114,14 @@ public class Repository {
 
     // Metod för att lägga till en ett konto för en kund. Returnerar id'et på det konto som läggs till.
     // Returnerar 0 om något går fel.
-    public int addCustomerAccount(int id, double balance, double interestRate) {
+    public int addCustomerAccount(int customerId, double balance, double interestRate) {
         int addedAccountId = 0;
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
                     "INSERT INTO inl3.account(customer_id, balance, interest_rate) " +
                          "VALUES(?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
-            pstmt.setInt(1, id);
+            pstmt.setInt(1, customerId);
             pstmt.setDouble(2, balance);
             pstmt.setDouble(3, interestRate);
             int rowAffected = pstmt.executeUpdate();
@@ -136,6 +135,57 @@ public class Repository {
             e.printStackTrace();
         }
         return addedAccountId;
+    }
+
+    // Metod som returnerar en kunds alla lån i form av en lista
+    public ArrayList<Loan> getCustomerLoans(int customerIdParam) {
+        ArrayList<Loan> customerLoans = new ArrayList<>();
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT * " +
+                         "FROM inl3.loan " +
+                         "WHERE customer_id = ?");
+            pstmt.setInt(1, customerIdParam);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                double amount = rs.getDouble("amount");
+                double interestRate = rs.getDouble("interest_rate");
+                int staffApprovedId = rs.getInt("staff_approved_id");
+                customerLoans.add(new Loan(id, customerId, amount, interestRate, staffApprovedId));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerLoans;
+    }
+
+    // Metod som returnerar en kunds alla konton i form av en lista
+    public ArrayList<Account> getCustomerAccounts(int customerIdParam) {
+        ArrayList<Account> customerAccounts = new ArrayList<>();
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT * " +
+                         "FROM inl3.account " +
+                         "WHERE customer_id = ?");
+            pstmt.setInt(1, customerIdParam);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                double balance = rs.getDouble("balance");
+                double interestRate = rs.getDouble("interest_rate");
+                customerAccounts.add(new Account(id, customerId, balance, interestRate));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerAccounts;
+    }
+
+    public void deleteCustomer() {
+
     }
 
 }

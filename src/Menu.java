@@ -120,5 +120,15 @@ public class Menu {
         }
     }
 
+    public void deleteCustomer(String ssnumber) {
+        Customer customer = repository.getSpecificCustomer(ssnumber);
+        if(customer != null) {
+            // todo kalla på metod som raderar kunddata i db'n
+        } else {
+            System.out.println("Could not find a customer with social security number: " + ssnumber);
+        }
+
+    }
+
 
 }
