@@ -26,4 +26,12 @@ public class Account {
     public double getInterestRate() {
         return interestRate;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + id +
+                ", customerId: " + customerId +
+                ", balance: " + balance +
+                ", interestRate: " + interestRate;
+    }
 }

@@ -197,4 +197,18 @@ public class Repository {
         }
     }
 
+    public int deleteAccount(int accountId) {
+        int rowAffected = 0;
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "DELETE FROM account " +
+                         "WHERE id = ?;");
+            pstmt.setInt(1, accountId);
+            rowAffected = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
+    }
+
 }

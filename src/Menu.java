@@ -132,12 +132,36 @@ public class Menu {
                     " will also be permanently deletet");
             System.out.println("1. for Yes \n" +
                                "2. for No");
-            String answer = scan.nextLine();
+            String answer = scan.nextLine().trim();
             if (answer.equals("1")) {
                 repository.deleteCustomer(customer.getId());
-                System.out.println("Customer was successfully deletet");
+                System.out.println("Customer was successfully deleted");
             } else {
                 System.out.println("Customer was not deleted");
+            }
+        } else {
+            System.out.println("Could not find a customer with social security number: " + ssnumber);
+        }
+    }
+
+    public void deleteAccount(String ssnumber) {
+        int output;
+        ArrayList<Account> accounts;
+        Customer customer = repository.getSpecificCustomer(ssnumber);
+        if(customer != null) {
+            accounts = repository.getCustomerAccounts(customer.getId());
+            System.out.println(customer.getName()+ " has " + accounts.size() + " accounts");
+            accounts.forEach((e) -> System.out.println(e.toString()));
+            System.out.println("Enter the ID for the account you want to delete:");
+            String accountIdTemp = scan.nextLine().trim();
+
+            // TODO: 2020-02-19 Även id'n för konton tillhörande en annan kund kan nu raderas 
+            int accountId = Integer.parseInt(accountIdTemp);
+            output = repository.deleteAccount(accountId);
+            if(output != 0) {
+                System.out.println("Account deleted");
+            } else {
+                System.out.println("Unexpected error occurred when trying to delete an account");
             }
         } else {
             System.out.println("Could not find a customer with social security number: " + ssnumber);
