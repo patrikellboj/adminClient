@@ -197,11 +197,13 @@ public class Repository {
         }
     }
 
+    // Metod som raderar ett konto. Raderar allt, oavsett om kontot har pengar eller inte.
+    // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
     public int deleteAccount(int accountId) {
         int rowAffected = 0;
         try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "DELETE FROM account " +
+                    "DELETE FROM inl3.account " +
                          "WHERE id = ?;");
             pstmt.setInt(1, accountId);
             rowAffected = pstmt.executeUpdate();
@@ -209,6 +211,19 @@ public class Repository {
             e.printStackTrace();
         }
         return rowAffected;
+    }
+
+    // Metod som uppdaterar värdet på balance genom en SP
+    public void depositMoney(int customerId, int accountId, double moneyToDeposit) {
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            CallableStatement cstmt = conn.prepareCall("CALL admin_deposit(?, ?, ?);");
+            cstmt.setInt(1, customerId);
+            cstmt.setInt(2, accountId);
+            cstmt.setDouble(3, moneyToDeposit);
+            cstmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

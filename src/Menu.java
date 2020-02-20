@@ -150,14 +150,19 @@ public class Menu {
         Customer customer = repository.getSpecificCustomer(ssnumber);
         if(customer != null) {
             accounts = repository.getCustomerAccounts(customer.getId());
+
             System.out.println(customer.getName()+ " has " + accounts.size() + " accounts");
+            if(accounts.size() < 1) {
+                System.out.println("Customer must have an account in order to delete one");
+                return;
+            }
             accounts.forEach((e) -> System.out.println(e.toString()));
             System.out.println("Enter the ID for the account you want to delete:");
-            String accountIdTemp = scan.nextLine().trim();
 
-            // TODO: 2020-02-19 Även id'n för konton tillhörande en annan kund kan nu raderas 
+            String accountIdTemp = scan.nextLine().trim();
             int accountId = Integer.parseInt(accountIdTemp);
             output = repository.deleteAccount(accountId);
+
             if(output != 0) {
                 System.out.println("Account deleted");
             } else {
@@ -168,4 +173,75 @@ public class Menu {
         }
     }
 
+    public void depositMoney(String ssnumber) {
+        try {
+            int accountId;
+            double moneyToDeposit;
+            ArrayList<Account> accounts;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+
+            if (customer != null) {
+                accounts = repository.getCustomerAccounts(customer.getId());
+                System.out.println(customer.getName()+ " has " + accounts.size() + " accounts");
+
+                if(accounts.size() < 1) {
+                    System.out.println("In order to deposit money the customer must first create an account");
+                    return;
+                }
+                accounts.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("Enter the ID for the account you want to deposit money into:");
+
+                String accountIdTemp = scan.nextLine().trim();
+                accountId = Integer.parseInt(accountIdTemp);
+
+                System.out.println("Enter how much do you want to deposit:");
+                String moneyToDepositTemp = scan.nextLine().trim();
+                moneyToDeposit = Double.parseDouble(moneyToDepositTemp);
+                if(moneyToDeposit <= 0) {
+                    System.out.println("Value to deposit must be positive");
+                    return;
+                }
+                repository.depositMoney(customer.getId(), accountId, moneyToDeposit);
+
+                accounts = repository.getCustomerAccounts(customer.getId());
+                System.out.print("New balance for account: ");
+                accounts.forEach(e->{
+                    if(accountId == e.getId()){
+                        System.out.print(e.getBalance());
+                    }
+                });
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
+        }
+    }
+
 }
+
+//    int output;
+//    double balance;
+//    double interestRate;
+//    Customer customer = repository.getSpecificCustomer(ssnumber);
+//            if (customer != null) {
+//                    System.out.println("Creating an account for the following customer: " + customer.toString());
+//                    System.out.println("Enter initial balance for account:");
+//                    String tempBalance = scan.nextLine().trim();
+//                    balance = Double.parseDouble(tempBalance);
+//                    System.out.println("Enter interest rate (in %) for account:");
+//                    String tempInterestRate = scan.nextLine().trim();
+//                    interestRate = Double.parseDouble(tempInterestRate);
+//
+//                    output = repository.addCustomerAccount(customer.getId(), balance, interestRate);
+//
+//                    if(output != 0) {
+//                    System.out.println("An account with a balance of: " + balance +
+//                    " and an interest rate of: " + interestRate + "% was created for " + customer.getName());
+//                    } else {
+//                    System.out.println("Unexpected error occurred when trying to create an account for " +
+//                    customer.getName());
+//                    }
+//                    } else {
+//                    System.out.println("Could not find a customer with social security number: " + ssnumber);
+//                    }
