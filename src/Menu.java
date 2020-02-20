@@ -245,10 +245,10 @@ public class Menu {
                 String moneyToWithdrawTemp = scan.nextLine().trim();
                 moneyToWithdraw = Double.parseDouble(moneyToWithdrawTemp);
                 if(moneyToWithdraw <= 0) {
-                    System.out.println("Value to deposit must be positive");
+                    System.out.println("Value to withdraw must be positive");
                     return;
                 }
-                output = repository.depositMoney(customer.getId(), accountId, moneyToWithdraw);
+                output = repository.withdrawMoney(customer.getId(), accountId, moneyToWithdraw);
                 System.out.println(output);
                 accounts = repository.getCustomerAccounts(customer.getId());
                 System.out.print("New balance for account: ");
@@ -264,6 +264,57 @@ public class Menu {
         } catch (NumberFormatException e) {
             System.out.println("Error occurred. Input value must be numeric values");
         }
+    }
+
+    public void updateAccountInterest(String ssnumber) {
+        try {
+            int output;
+            int accountId;
+            double newInterestRate;
+            ArrayList<Account> accounts;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                accounts = repository.getCustomerAccounts(customer.getId());
+                System.out.println(customer.getName() + " has " + accounts.size() + " accounts");
+
+                if (accounts.size() < 1) {
+                    System.out.println("In order to change interest rate the customer must first create an account");
+                    return;
+                }
+                accounts.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("Enter the ID for the account you want to change interest rate on:");
+
+                String accountIdTemp = scan.nextLine().trim();
+                accountId = Integer.parseInt(accountIdTemp);
+
+                System.out.println("Enter new interest rate");
+                String newInterestRateTemp = scan.nextLine().trim();
+                newInterestRate = Double.parseDouble(newInterestRateTemp);
+//                if(newInterestRate <= 0) {
+//                    System.out.println("Value interest rate must be positive");
+//                    return;
+//                }
+                output = repository.updateAccountInterest(newInterestRate, accountId, customer.getId());
+                if(output != 0) {
+                    System.out.println("Interest rate changed!");
+                    accounts = repository.getCustomerAccounts(customer.getId());
+                    System.out.print("New interest rate for account: ");
+                    // Skriver ut balance på det konto som ändrades
+                    accounts.forEach(e->{
+                        if(accountId == e.getId()){
+                            System.out.print(e.getInterestRate());
+                        }
+                    });
+                } else {
+                    System.out.println("Unexpected error occurred when trying to change interest rate");
+                }
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
+        }
+
     }
 
 }

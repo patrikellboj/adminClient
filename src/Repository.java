@@ -232,6 +232,8 @@ public class Repository {
         return message;
     }
 
+    // Metod som uppdaterar värdet på balance genom en SP
+    // Returnerar en sträng från sql om det gick bra eller inte.
     public String withdrawMoney(int customerId, int accountId, double moneyToWithdraw) {
         String message = null;
         try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
@@ -247,6 +249,26 @@ public class Repository {
             e.printStackTrace();
         }
         return message;
+    }
+
+    // Metod som uppdaterar en interest_rate på en kunds.
+    // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
+    public int updateAccountInterest(double newInterestRate, int accountId, int customerId) {
+        int rowAffected = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE account " +
+                         "SET interest_rate = ? " +
+                         "WHERE id = ? " +
+                         "AND customer_id = ?");
+            pstmt.setDouble(1, newInterestRate);
+            pstmt.setInt(2, accountId);
+            pstmt.setInt(3, customerId);
+            rowAffected = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
     }
 
 }

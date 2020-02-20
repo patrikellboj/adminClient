@@ -30,8 +30,8 @@ public class Account {
     @Override
     public String toString() {
         return "ID: " + id +
-                ", customerId: " + customerId +
+                ", customer ID: " + customerId +
                 ", balance: " + balance +
-                ", interestRate: " + interestRate;
+                ", interest rate: " + interestRate;
     }
 }
