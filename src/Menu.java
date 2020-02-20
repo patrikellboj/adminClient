@@ -175,6 +175,7 @@ public class Menu {
 
     public void depositMoney(String ssnumber) {
         try {
+            String output;
             int accountId;
             double moneyToDeposit;
             ArrayList<Account> accounts;
@@ -201,10 +202,57 @@ public class Menu {
                     System.out.println("Value to deposit must be positive");
                     return;
                 }
-                repository.depositMoney(customer.getId(), accountId, moneyToDeposit);
-
+                output = repository.depositMoney(customer.getId(), accountId, moneyToDeposit);
+                System.out.println(output);
                 accounts = repository.getCustomerAccounts(customer.getId());
                 System.out.print("New balance for account: ");
+                // Skriver ut balance på det konto som ändrades
+                accounts.forEach(e->{
+                    if(accountId == e.getId()){
+                        System.out.print(e.getBalance());
+                    }
+                });
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
+        }
+    }
+
+    public void withdrawMoney(String ssnumber) {
+        try {
+            String output;
+            int accountId;
+            double moneyToWithdraw;
+            ArrayList<Account> accounts;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                accounts = repository.getCustomerAccounts(customer.getId());
+                System.out.println(customer.getName() + " has " + accounts.size() + " accounts");
+
+                if (accounts.size() < 1) {
+                    System.out.println("In order to withdraw money the customer must first create an account");
+                    return;
+                }
+                accounts.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("Enter the ID for the account you want to withdraw money from:");
+
+                String accountIdTemp = scan.nextLine().trim();
+                accountId = Integer.parseInt(accountIdTemp);
+
+                System.out.println("Enter how much do you want to withdraw:");
+                String moneyToWithdrawTemp = scan.nextLine().trim();
+                moneyToWithdraw = Double.parseDouble(moneyToWithdrawTemp);
+                if(moneyToWithdraw <= 0) {
+                    System.out.println("Value to deposit must be positive");
+                    return;
+                }
+                output = repository.depositMoney(customer.getId(), accountId, moneyToWithdraw);
+                System.out.println(output);
+                accounts = repository.getCustomerAccounts(customer.getId());
+                System.out.print("New balance for account: ");
+                // Skriver ut balance på det konto som ändrades
                 accounts.forEach(e->{
                     if(accountId == e.getId()){
                         System.out.print(e.getBalance());
@@ -219,29 +267,3 @@ public class Menu {
     }
 
 }
-
-//    int output;
-//    double balance;
-//    double interestRate;
-//    Customer customer = repository.getSpecificCustomer(ssnumber);
-//            if (customer != null) {
-//                    System.out.println("Creating an account for the following customer: " + customer.toString());
-//                    System.out.println("Enter initial balance for account:");
-//                    String tempBalance = scan.nextLine().trim();
-//                    balance = Double.parseDouble(tempBalance);
-//                    System.out.println("Enter interest rate (in %) for account:");
-//                    String tempInterestRate = scan.nextLine().trim();
-//                    interestRate = Double.parseDouble(tempInterestRate);
-//
-//                    output = repository.addCustomerAccount(customer.getId(), balance, interestRate);
-//
-//                    if(output != 0) {
-//                    System.out.println("An account with a balance of: " + balance +
-//                    " and an interest rate of: " + interestRate + "% was created for " + customer.getName());
-//                    } else {
-//                    System.out.println("Unexpected error occurred when trying to create an account for " +
-//                    customer.getName());
-//                    }
-//                    } else {
-//                    System.out.println("Could not find a customer with social security number: " + ssnumber);
-//                    }

@@ -8,6 +8,7 @@ public class Main {
 //        menu.addCustomerAccount("880000");
 //        menu.deleteCustomer("761201");
 //        menu.deleteAccount("671201");
-        menu.depositMoney("761201");
+//        menu.depositMoney("761201");
+        menu.withdrawMoney("761201");
     }
 }

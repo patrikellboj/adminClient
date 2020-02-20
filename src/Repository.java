@@ -214,16 +214,39 @@ public class Repository {
     }
 
     // Metod som uppdaterar värdet på balance genom en SP
-    public void depositMoney(int customerId, int accountId, double moneyToDeposit) {
+    // Returnerar en sträng från sql om det gick bra eller inte.
+    public String depositMoney(int customerId, int accountId, double moneyToDeposit) {
+        String message = null;
         try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             CallableStatement cstmt = conn.prepareCall("CALL admin_deposit(?, ?, ?);");
             cstmt.setInt(1, customerId);
             cstmt.setInt(2, accountId);
             cstmt.setDouble(3, moneyToDeposit);
-            cstmt.execute();
+            ResultSet rs = cstmt.executeQuery();
+            while (rs.next()) {
+                message = rs.getString("message");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return message;
+    }
+
+    public String withdrawMoney(int customerId, int accountId, double moneyToWithdraw) {
+        String message = null;
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            CallableStatement cstmt = conn.prepareCall("CALL admin_withdraw(?, ?, ?);");
+            cstmt.setInt(1, customerId);
+            cstmt.setInt(2, accountId);
+            cstmt.setDouble(3, moneyToWithdraw);
+            ResultSet rs = cstmt.executeQuery();
+            while (rs.next()) {
+                message = rs.getString("message");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 
 }
