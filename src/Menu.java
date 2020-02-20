@@ -314,7 +314,55 @@ public class Menu {
         } catch (NumberFormatException e) {
             System.out.println("Error occurred. Input value must be numeric values");
         }
+    }
 
+    public void updateLoanInterest(String ssnumber) {
+        try {
+            int output;
+            int loanId;
+            double newInterestRate;
+            ArrayList<Loan> loans;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                loans = repository.getCustomerLoans(customer.getId());
+                System.out.println(customer.getName() + " has " + loans.size() + " loans");
+
+                if (loans.size() < 1) {
+                    System.out.println("In order to change interest rate the customer must first have a loan");
+                    return;
+                }
+                loans.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("Enter the ID for the loan you want to change interest rate on:");
+
+                String loanIdTemp = scan.nextLine().trim();
+                loanId = Integer.parseInt(loanIdTemp);
+
+                System.out.println("Enter new interest rate");
+                String newInterestRateTemp = scan.nextLine().trim();
+                newInterestRate = Double.parseDouble(newInterestRateTemp);
+                if(newInterestRate <= 0) {
+                    System.out.println("Value interest rate must be positive");
+                    return;
+                }
+                output = repository.updateLoanInterest(newInterestRate, loanId, customer.getId());
+                if(output != 0) {
+                    System.out.println("Interest rate changed!");
+                    loans = repository.getCustomerLoans(customer.getId());
+                    System.out.print("New interest rate for loan: ");
+                    loans.forEach(e->{
+                        if(loanId == e.getId()){
+                            System.out.print(e.getInterestRate());
+                        }
+                    });
+                } else {
+                    System.out.println("Unexpected error occurred when trying to change interest rate");
+                }
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
+        }
     }
 
 }

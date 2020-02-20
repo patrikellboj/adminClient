@@ -10,6 +10,7 @@ public class Main {
 //        menu.deleteAccount("671201");
 //        menu.depositMoney("761201");
 //        menu.withdrawMoney("761201");
-        menu.updateAccountInterest("761201");
+//        menu.updateAccountInterest("761201");
+        menu.updateLoanInterest("123");
     }
 }

@@ -35,13 +35,11 @@ public class Loan {
 
     @Override
     public String toString() {
-        return "Loan{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", amount=" + amount +
-                ", interestRate=" + interestRate +
-                ", staffApprovedId=" + staffApprovedId +
-                '}';
+        return "ID: " + id +
+                ", customerId: " + customerId +
+                ", amount: " + amount +
+                ", interest rate: " + interestRate +
+                ", staffApprovedId: " + staffApprovedId;
     }
 
 }

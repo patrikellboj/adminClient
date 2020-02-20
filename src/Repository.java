@@ -251,18 +251,38 @@ public class Repository {
         return message;
     }
 
-    // Metod som uppdaterar en interest_rate på en kunds.
+    // Metod som uppdaterar en interest_rate på en kunds konto.
     // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
     public int updateAccountInterest(double newInterestRate, int accountId, int customerId) {
         int rowAffected = 0;
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE account " +
+                    "UPDATE inl3.account " +
                          "SET interest_rate = ? " +
                          "WHERE id = ? " +
                          "AND customer_id = ?");
             pstmt.setDouble(1, newInterestRate);
             pstmt.setInt(2, accountId);
+            pstmt.setInt(3, customerId);
+            rowAffected = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
+    }
+
+    // Metod som uppdaterar en interest_rate på en kunds lån.
+    // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
+    public int updateLoanInterest(double newInterestRate, int loanId, int customerId) {
+        int rowAffected = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE inl3.loan " +
+                         "SET interest_rate = ? " +
+                         "WHERE id = ? " +
+                         "AND customer_id = ?");
+            pstmt.setDouble(1, newInterestRate);
+            pstmt.setInt(2, loanId);
             pstmt.setInt(3, customerId);
             rowAffected = pstmt.executeUpdate();
         } catch (SQLException e) {
