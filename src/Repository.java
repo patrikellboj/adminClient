@@ -291,4 +291,23 @@ public class Repository {
         return rowAffected;
     }
 
+    // Metod som returnerar en lista med alla customers.
+    public ArrayList<Admin> getAdmins() {
+        ArrayList<Admin> allAdminsList = new ArrayList<>();
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            Statement stmt = conn.createStatement();
+            String sqlQuery = "SELECT id, name, password FROM inl3.staff";
+            ResultSet rs = stmt.executeQuery(sqlQuery);
+            while(rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String password = rs.getString("password");
+                allAdminsList.add(new Admin(id, name, password));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allAdminsList;
+    }
+
 }

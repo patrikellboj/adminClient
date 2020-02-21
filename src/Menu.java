@@ -4,10 +4,43 @@ import java.util.Scanner;
 public class Menu {
     private static final Scanner scan = new Scanner(System.in);
     Repository repository;
+    Admin adminLoggedIn = null;
 
     public Menu(Repository repository) {
         this.repository = repository;
     }
+
+    public void enterUserAndPass() {
+        try {
+            while(adminLoggedIn == null) {
+                System.out.println("Enter your user name:");
+                String username = scan.nextLine().trim();
+                System.out.println("Enter your user password:");
+                String password = scan.nextLine().trim();
+                this.adminLoggedIn = checkValidUser(username, password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Admin checkValidUser(String name, String password) {
+        for (Admin admin : repository.getAdmins()) {
+            if(name.equals(admin.getName())) {
+                if(password.equals(admin.getPassword())) {
+                    System.out.println("Welcome " +
+                            admin.getName() + ".");
+                    return admin;
+                } else {
+                    System.out.println("Wrong password. Try again..");
+                    return null;
+                }
+            }
+        }
+        System.out.println("Wrong username. Try again..");
+        return null;
+    }
+
 
     public void addCustomer(String name, String ssnumber, String password) {
         // Kollar om en kund med parametervärdet ssnumber redan finns i databasen.
