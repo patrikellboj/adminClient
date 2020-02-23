@@ -11,7 +11,8 @@ public class Main {
 //        menu.depositMoney("761201");
 //        menu.withdrawMoney("761201");
 //        menu.updateAccountInterest("761201");
-//        menu.updateLoanInterest("123");
+//        menu.updateLoanInterest("456");
         menu.enterUserAndPass();
+        menu.approveLoan("761201");
     }
 }

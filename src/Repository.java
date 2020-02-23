@@ -291,7 +291,7 @@ public class Repository {
         return rowAffected;
     }
 
-    // Metod som returnerar en lista med alla customers.
+    // Metod som returnerar en lista med alla admins.
     public ArrayList<Admin> getAdmins() {
         ArrayList<Admin> allAdminsList = new ArrayList<>();
         try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
@@ -308,6 +308,26 @@ public class Repository {
             e.printStackTrace();
         }
         return allAdminsList;
+    }
+
+    // Metod som uppdaterar staff_approved_id till den admin som är inloggads id, på en kunds lån.
+    // Returnerar 1 om en rad i databasen blev påverkad, annars 0.
+    public int approveLoan(int adminLoggedInId, int loanId, int customerId) {
+        int rowAffected = 0;
+        try(Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE inl3.loan " +
+                            "SET staff_approved_id = ? " +
+                            "WHERE id = ? " +
+                            "AND customer_id = ?");
+            pstmt.setInt(1, adminLoggedInId);
+            pstmt.setInt(2, loanId);
+            pstmt.setInt(3, customerId);
+            rowAffected = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
     }
 
 }

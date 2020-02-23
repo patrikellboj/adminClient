@@ -13,7 +13,7 @@ public class Menu {
     public void enterUserAndPass() {
         try {
             while(adminLoggedIn == null) {
-                System.out.println("Enter your user name:");
+                System.out.println("Enter your username:");
                 String username = scan.nextLine().trim();
                 System.out.println("Enter your user password:");
                 String password = scan.nextLine().trim();
@@ -26,7 +26,7 @@ public class Menu {
 
     public Admin checkValidUser(String name, String password) {
         for (Admin admin : repository.getAdmins()) {
-            if(name.equals(admin.getName())) {
+            if(name.equalsIgnoreCase(admin.getName())) {
                 if(password.equals(admin.getPassword())) {
                     System.out.println("Welcome " +
                             admin.getName() + ".");
@@ -43,7 +43,6 @@ public class Menu {
 
 
     public void addCustomer(String name, String ssnumber, String password) {
-        // Kollar om en kund med parametervärdet ssnumber redan finns i databasen.
         ArrayList<Customer> allCustomersList = repository.getCustomers();
         for (Customer customer : allCustomersList) {
             if(ssnumber.equals(customer.getSsnumber())) {
@@ -389,6 +388,40 @@ public class Menu {
                     });
                 } else {
                     System.out.println("Unexpected error occurred when trying to change interest rate");
+                }
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error occurred. Input value must be numeric values");
+        }
+    }
+
+    public void approveLoan(String ssnumber) {
+        try {
+            int output;
+            int loanId;
+            ArrayList<Loan> loans;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                loans = repository.getCustomerLoans(customer.getId());
+                loans.removeIf(e -> e.getStaffApprovedId() != 0);
+                if(loans.size() < 1) {
+                    System.out.println("The customer did not have any loans that needed approval");
+                    return;
+                }
+                System.out.println("The following loan/loans needs approval");
+                loans.forEach((e) -> System.out.println(e.toString()));
+
+                System.out.println("Enter the ID for the loan you want to approve:");
+                String loanIdTemp = scan.nextLine().trim();
+                loanId = Integer.parseInt(loanIdTemp);
+
+                output = repository.approveLoan(adminLoggedIn.getId(), loanId, customer.getId());
+                if(output != 0) {
+                    System.out.println("Loan aproved by " + adminLoggedIn.getName() + ".");
+                } else {
+                    System.out.println("Unexpected error occurred when trying to approve loan");
                 }
             } else {
                 System.out.println("Could not find a customer with social security number: " + ssnumber);
