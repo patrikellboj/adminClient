@@ -475,6 +475,7 @@ public class Menu {
                 System.out.println("Payment plan:");
                 System.out.println("Initial loan amount: " + customerLoan.getAmount() + "\n" +
                         "Interest rate: " + customerLoan.getInterestRate() + "%\n" +
+                        "Loan runs for " + years + " years\n" +
                         "After " + years + " years a total amount of " + totalAmount + " needs to be paid back");
 
             } else {
