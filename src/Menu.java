@@ -431,4 +431,58 @@ public class Menu {
         }
     }
 
+    public void getPaymentPlan(String ssnumber) {
+        try {
+            double years;
+            double totalAmount;
+            double interestRate;
+            double interestAmount;
+            int loanId;
+            ArrayList<Loan> loans;
+            Loan customerLoan = null;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                loans = repository.getCustomerLoans(customer.getId());
+                if (loans.size() < 1) {
+                    System.out.println("The customer did not have any loans");
+                    return;
+                }
+                System.out.println("Customer has the following loans:");
+                loans.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("\nEnter the ID for the loan you want to see the payment plan for:");
+                String loanIdTemp = scan.nextLine().trim();
+                loanId = Integer.parseInt(loanIdTemp);
+                for (Loan loan : loans) {
+                    if(loan.getId() == loanId) {
+                        customerLoan = loan;
+                    }
+                }
+                if(customerLoan == null) {
+                    System.out.println("Unexpected error");
+                    return;
+                }
+
+                years = repository.getPaymentPlan(loanId);
+                 if(years == 0) {
+                     System.out.println("Your loan does not seem to have a set time period");
+                     return;
+                 }
+
+                interestRate = customerLoan.getInterestRate() * 0.01;
+                interestAmount = (customerLoan.getAmount() * interestRate) * years;
+                totalAmount = customerLoan.getAmount() + interestAmount;
+
+                System.out.println("Payment plan:");
+                System.out.println("Initial loan amount: " + customerLoan.getAmount() + "\n" +
+                        "Interest rate: " + customerLoan.getInterestRate() + "%\n" +
+                        "After " + years + " years a total amount of " + totalAmount + " needs to be paid back");
+
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

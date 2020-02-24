@@ -330,4 +330,21 @@ public class Repository {
         return rowAffected;
     }
 
+    public double getPaymentPlan(int loanId) {
+        double years = 0;
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT paymentplan.years " +
+                         "FROM inl3.paymentplan " +
+                         "WHERE loan_id = ?");
+            pstmt.setInt(1, loanId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                years = rs.getDouble("years");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return years;
+    }
 }
