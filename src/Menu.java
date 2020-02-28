@@ -486,4 +486,68 @@ public class Menu {
         }
     }
 
+    public void updatePaymentPlan(String ssnumber) {
+        try {
+            double years;
+            int output;
+            int loanId;
+            ArrayList<Loan> loans;
+            Loan customerLoan = null;
+            Customer customer = repository.getSpecificCustomer(ssnumber);
+            if (customer != null) {
+                loans = repository.getCustomerLoans(customer.getId());
+                if (loans.size() < 1) {
+                    System.out.println("The customer did not have any loans. Can not update update any payment plan");
+                    return;
+                }
+                System.out.println("Customer has the following loans:");
+                loans.forEach((e) -> System.out.println(e.toString()));
+                System.out.println("\nEnter the ID for the loan you want to change the payment plan for:");
+                String loanIdTemp = scan.nextLine().trim();
+                loanId = Integer.parseInt(loanIdTemp);
+                for (Loan loan : loans) {
+                    if(loan.getId() == loanId) {
+                        customerLoan = loan;
+                    }
+                }
+                if(customerLoan == null) {
+                    System.out.println("Unexpected error");
+                    return;
+                }
+
+                years = repository.getPaymentPlan(loanId);
+                System.out.println("Current payment plan is set for " + years + " years" +
+                        "\nDo you want to change that?" +
+                        "\n1. for Yes" +
+                        "\n2. for No");
+
+                String option = scan.nextLine().trim();
+
+                switch(option) {
+                    case "1":
+                        System.out.println("Enter the amount of years you want to set the payment plan for");
+                        String yearsToChangeToTemp = scan.nextLine().trim();
+                        double yearsToChangeTo = Double.parseDouble(yearsToChangeToTemp);
+                        output = repository.updatePaymentPlan(yearsToChangeTo, loanId);
+                        if (output != 0) {
+                            System.out.println("Payment plan updated to: " + yearsToChangeTo + " years");
+                        } else {
+                            System.out.println("Unexpected error occurred when updating payment plan");
+                        }
+                        break;
+                    case "2":
+                        break;
+                    default:
+                        System.out.println("Didn't catch that.");
+                        break;
+                }
+
+            } else {
+                System.out.println("Could not find a customer with social security number: " + ssnumber);
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

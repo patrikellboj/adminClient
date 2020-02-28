@@ -16,6 +16,7 @@ public class Main {
 //        menu.enterUserAndPass();
 //        menu.approveLoan("761201");
 
-        menu.getPaymentPlan("900101");
+//        menu.getPaymentPlan("900101");
+        menu.updatePaymentPlan("900101");
     }
 }
