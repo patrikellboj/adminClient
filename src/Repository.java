@@ -347,4 +347,20 @@ public class Repository {
         }
         return years;
     }
+
+    public int updatePaymentPlan(double yearsToChangeTo, int loanId) {
+        int rowAffected = 0;
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"))) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE inl3.paymentplan " +
+                         "SET years = ? " +
+                         "WHERE loan_id = ?");
+            pstmt.setDouble(1, yearsToChangeTo);
+            pstmt.setInt(2, loanId);
+            rowAffected = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowAffected;
+    }
 }
