@@ -41,6 +41,85 @@ public class Menu {
         return null;
     }
 
+    public void mainMenu() {
+        while (true) {
+            String ssnumber;
+            System.out.println("\nMain menu\nChoose an option for what you would like to do");
+            System.out.println(
+                    "1 - to add a new customer.\n" +
+                    "2 - to update customer details.\n" +
+                    "3 - to delete a customer.\n" +
+                    "4 - to add a customer account.\n" +
+                    "5 - to close a customers account.\n" +
+                    "6 - to deposit money to a customers account.\n" +
+                    "7 - to withdraw money from a customers account.\n" +
+                    "8 - to change interest rate for a customers account.\n" +
+                    "9 - to approve a customers loan.\n" +
+                    "10 - to change interest rate for a customers loan\n" +
+                    "11 - to display the payment plan for a customers loan\n" +
+                    "12 - to change the payment plan for a customers loan\n" +
+                    "13 - to exit program");
+            String option = scan.nextLine().trim();
+            ssnumber = enterCustomerSsnumber();
+            switch (option) {
+                case "1":
+                    String customerName;
+                    String customerPassword;
+                    System.out.println("Enter customers name:");
+                    customerName = scan.nextLine().trim();
+                    System.out.println("Enter customers desired password:");
+                    customerPassword = scan.nextLine().trim();
+                    addCustomer(customerName, ssnumber, customerPassword);
+                    break;
+                case "2":
+                    updateCustomerDetails(ssnumber);
+                    break;
+                case "3":
+                    deleteCustomer(ssnumber);
+                    break;
+                case "4":
+                    addCustomerAccount(ssnumber);
+                    break;
+                case "5":
+                    deleteAccount(ssnumber);
+                    break;
+                case "6":
+                    depositMoney(ssnumber);
+                    break;
+                case "7":
+                    withdrawMoney(ssnumber);
+                    break;
+                case "8":
+                    updateAccountInterest(ssnumber);
+                    break;
+                case "9":
+                    approveLoan(ssnumber);
+                    break;
+                case "10":
+                    updateLoanInterest(ssnumber);
+                    break;
+                case "11":
+                    getPaymentPlan(ssnumber);
+                    break;
+                case "12":
+                    updatePaymentPlan(ssnumber);
+                    break;
+                case "13":
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid option, try again.");
+                    break;
+            }
+        } // while loop end
+    }
+
+    public String enterCustomerSsnumber() {
+        String ssnumber;
+        System.out.println("Enter customers social security number:");
+        ssnumber = scan.nextLine().trim();
+        return ssnumber;
+    }
+
 
     public void addCustomer(String name, String ssnumber, String password) {
         ArrayList<Customer> allCustomersList = repository.getCustomers();
@@ -67,9 +146,9 @@ public class Menu {
         if(customer != null) {
             System.out.println("Found the following customer: " + customer.toString());
             System.out.println("What would you like to update? \n" +
-                    "1. for Name\n" +
-                    "2. for SS Number\n" +
-                    "3. for Password");
+                    "1 - for Name\n" +
+                    "2 - for SS Number\n" +
+                    "3 - for Password");
             String option = scan.nextLine();
 
             switch(option) {
@@ -162,8 +241,8 @@ public class Menu {
             System.out.println("Are you sure you want to delete customer: " + customer.toString() + "\n" +
                     accounts.size() + " accounts and " + loans.size() + " loans belonging " + customer.getName() +
                     " will also be permanently deletet");
-            System.out.println("1. for Yes \n" +
-                               "2. for No");
+            System.out.println("1 - for Yes \n" +
+                               "2 - for No");
             String answer = scan.nextLine().trim();
             if (answer.equals("1")) {
                 repository.deleteCustomer(customer.getId());
@@ -518,8 +597,8 @@ public class Menu {
                 years = repository.getPaymentPlan(loanId);
                 System.out.println("Current payment plan is set for " + years + " years" +
                         "\nDo you want to change that?" +
-                        "\n1. for Yes" +
-                        "\n2. for No");
+                        "\n1 - for Yes" +
+                        "\n2 - for No");
 
                 String option = scan.nextLine().trim();
 
