@@ -60,48 +60,60 @@ public class Menu {
                     "12 - to change the payment plan for a customers loan\n" +
                     "13 - to exit program");
             String option = scan.nextLine().trim();
-            ssnumber = enterCustomerSsnumber();
             switch (option) {
                 case "1":
                     String customerName;
                     String customerPassword;
-                    System.out.println("Enter customers name:");
+                    System.out.println("Enter new customers name:");
                     customerName = scan.nextLine().trim();
-                    System.out.println("Enter customers desired password:");
+                    System.out.println("Enter new customers social security number:");
+                    ssnumber = scan.nextLine().trim();
+                    System.out.println("Enter new customers desired password:");
                     customerPassword = scan.nextLine().trim();
                     addCustomer(customerName, ssnumber, customerPassword);
                     break;
                 case "2":
+                    ssnumber = enterCustomerSsnumber();
                     updateCustomerDetails(ssnumber);
                     break;
                 case "3":
+                    ssnumber = enterCustomerSsnumber();
                     deleteCustomer(ssnumber);
                     break;
                 case "4":
+                    ssnumber = enterCustomerSsnumber();
                     addCustomerAccount(ssnumber);
                     break;
                 case "5":
+                    ssnumber = enterCustomerSsnumber();
                     deleteAccount(ssnumber);
                     break;
                 case "6":
+                    ssnumber = enterCustomerSsnumber();
                     depositMoney(ssnumber);
                     break;
                 case "7":
+                    ssnumber = enterCustomerSsnumber();
                     withdrawMoney(ssnumber);
                     break;
                 case "8":
+                    ssnumber = enterCustomerSsnumber();
                     updateAccountInterest(ssnumber);
                     break;
                 case "9":
+                    ssnumber = enterCustomerSsnumber();
                     approveLoan(ssnumber);
                     break;
                 case "10":
+                    ssnumber = enterCustomerSsnumber();
                     updateLoanInterest(ssnumber);
                     break;
                 case "11":
+                    ssnumber = enterCustomerSsnumber();
                     getPaymentPlan(ssnumber);
                     break;
                 case "12":
+                    ssnumber = enterCustomerSsnumber();
                     updatePaymentPlan(ssnumber);
                     break;
                 case "13":
